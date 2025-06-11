@@ -3,6 +3,11 @@
 文件：heat_diffusion_student.py
 重要：函数名称必须与参考答案一致！
 """
+"""
+学生模板：铝棒热传导问题
+文件：heat_diffusion_student.py
+重要：函数名称必须与参考答案一致！
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -85,6 +90,20 @@ def plot_3d_solution(u, dx, dt, Nt, title):
 
 if __name__ == "__main__":
     """
+    主函数 - 演示和测试各任务功能
+    
+    执行顺序:
+    1. 基本热传导模拟
+    2. 解析解计算
+    3. 数值解稳定性分析
+    4. 不同初始条件模拟
+    5. 包含冷却效应的热传导
+    
+    注意:
+        学生需要先实现各任务函数才能正常运行
+    """
+    print("=== 铝棒热传导问题学生实现 ===")
+    print("请先实现各任务函数后再运行主程序")
     主函数 - 演示和测试各任务功能
     
     执行顺序:
