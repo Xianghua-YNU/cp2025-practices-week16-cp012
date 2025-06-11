@@ -171,6 +171,7 @@ if __name__ == "__main__":
     
     print("\n5. 包含牛顿冷却定律的热传导")
     heat_diffusion_with_cooling()  # 调用任务5的函数
+    '''
     主函数 - 演示和测试各任务功能
     
     执行顺序:
