@@ -364,4 +364,120 @@ class HeatEquationSolver:
         
         # solve_ivp方法
         print(f"4. solve_ivp method ({ivp_method})...")
-        methods_results['solve_ivp'] = self.solve_with_solve_iv
+        methods_results['solve_ivp'] = self.solve_with_solve_ivp(ivp_method, plot_times)
+        print(f"   Computation time: {methods_results['solve_ivp']['computation_time']:.4f} s")
+        
+        print("-" * 60)
+        print("All methods completed successfully!")
+        
+        return methods_results
+    
+    def plot_comparison(self, methods_results, save_figure=False, filename='heat_equation_comparison.png'):
+        """
+        绘制所有方法的比较图。
+        
+        参数:
+            methods_results (dict): compare_methods的结果
+            save_figure (bool): 是否保存图像
+            filename (str): 保存的文件名
+        """
+        fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+        axes = axes.flatten()
+        
+        method_names = ['explicit', 'implicit', 'crank_nicolson', 'solve_ivp']
+        colors = ['blue', 'red', 'green', 'orange', 'purple']
+        
+        for idx, method_name in enumerate(method_names):
+            ax = axes[idx]
+            results = methods_results[method_name]
+            
+            # 在不同时间绘制解
+            for i, (t, u) in enumerate(zip(results['times'], results['solutions'])):
+                ax.plot(self.x, u, color=colors[i], label=f't = {t:.1f}', linewidth=2)
+            
+            ax.set_title(f"{results['method']}\n(Time: {results['computation_time']:.4f} s)")
+            ax.set_xlabel('Position x')
+            ax.set_ylabel('Temperature u(x,t)')
+            ax.grid(True, alpha=0.3)
+            ax.legend()
+            ax.set_xlim(0, self.L)
+            ax.set_ylim(-0.1, 1.1)
+        
+        plt.tight_layout()
+        
+        if save_figure:
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            print(f"Figure saved as {filename}")
+        
+        plt.show()
+    
+    def analyze_accuracy(self, methods_results, reference_method='solve_ivp'):
+        """
+        分析不同方法的精度。
+        
+        参数:
+            methods_results (dict): compare_methods的结果
+            reference_method (str): 用作参考的方法
+            
+        返回:
+            dict: 精度分析结果
+        """
+        if reference_method not in methods_results:
+            raise ValueError(f"Reference method '{reference_method}' not found in results")
+        
+        reference = methods_results[reference_method]
+        accuracy_results = {}
+        
+        print(f"\nAccuracy Analysis (Reference: {reference['method']})")
+        print("-" * 50)
+        
+        for method_name, results in methods_results.items():
+            if method_name == reference_method:
+                continue
+                
+            errors = []
+            for i, (ref_sol, test_sol) in enumerate(zip(reference['solutions'], results['solutions'])):
+                if i < len(results['solutions']):
+                    error = np.linalg.norm(ref_sol - test_sol, ord=2)
+                    errors.append(error)
+            
+            max_error = max(errors) if errors else 0
+            avg_error = np.mean(errors) if errors else 0
+            
+            accuracy_results[method_name] = {
+                'max_error': max_error,
+                'avg_error': avg_error,
+                'errors': errors
+            }
+            
+            print(f"{results['method']:25} - Max Error: {max_error:.2e}, Avg Error: {avg_error:.2e}")
+        
+        return accuracy_results
+
+def main():
+    """
+    HeatEquationSolver类的演示。
+    """
+    # 创建求解器实例
+    solver = HeatEquationSolver(L=20.0, alpha=10.0, nx=21, T_final=25.0)
+    
+    # 比较所有方法
+    plot_times = [0, 1, 5, 15, 25]
+    results = solver.compare_methods(
+        dt_explicit=0.01,
+        dt_implicit=0.1, 
+        dt_cn=0.5,
+        ivp_method='BDF',
+        plot_times=plot_times
+    )
+    
+    # 绘制比较图
+    solver.plot_comparison(results, save_figure=True)
+    
+    # 分析精度
+    accuracy = solver.analyze_accuracy(results, reference_method='solve_ivp')
+    
+    return solver, results, accuracy
+
+if __name__ == "__main__":
+    solver, results, accuracy = main()
