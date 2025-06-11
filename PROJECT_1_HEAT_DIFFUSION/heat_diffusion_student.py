@@ -11,7 +11,7 @@ L = 1         # 铝棒长度 (m)
 dx = 0.01     # 空间步长 (m)
 dt = 0.5      # 时间步长 (s)
 Nx = int(L/dx) + 1 # 空间格点数
-Nt = 2000  # 时间步数
+Nt = 2000     # 时间步数
 
 # 任务1: 基本热传导模拟
 def basic_heat_diffusion():
@@ -20,9 +20,9 @@ def basic_heat_diffusion():
     print(f"任务1 - 稳定性参数 r = {r}")
     
     u = np.zeros((Nx, Nt))
-    u[:, 0] = 100
-    u[0, :] = 0
-    u[-1, :] = 0
+    u[:, 0] = 100  # 初始温度设为100℃
+    u[0, :] = 0    # 左端温度保持0℃
+    u[-1, :] = 0   # 右端温度保持0℃
     
     for j in range(Nt-1):
         u[1:-1, j+1] = (1-2*r)*u[1:-1, j] + r*(u[2:, j] + u[:-2, j])
@@ -45,7 +45,7 @@ def analytical_solution(n_terms=100):
 def stability_analysis():
     """任务3: 数值解稳定性分析"""
     dx = 0.01
-    dt = 0.6
+    dt = 0.6  # 使r>0.5
     r = D*dt/(dx**2)
     print(f"任务3 - 稳定性参数 r = {r} (r>0.5)")
     
@@ -74,8 +74,8 @@ def different_initial_condition():
     Nt = 1000
     
     u = np.zeros((Nx, Nt))
-    u[:51, 0] = 100
-    u[50:, 0] = 50
+    u[:51, 0] = 100  # 左半部分初始温度100℃
+    u[50:, 0] = 50   # 右半部分初始温度50℃
     u[0, :] = 0
     u[-1, :] = 0
     
@@ -89,7 +89,7 @@ def different_initial_condition():
 def heat_diffusion_with_cooling():
     """任务5: 包含牛顿冷却定律的热传导"""
     r = D*dt/(dx**2)
-    h = 0.1
+    h = 0.1  # 冷却系数
     print(f"任务5 - 稳定性参数 r = {r}, 冷却系数 h = {h}")
     
     Nx = int(L/dx) + 1
@@ -117,7 +117,7 @@ def plot_3d_solution(u, dx, dt, Nt, title):
     ax.plot_surface(X, T, u.T, cmap='rainbow')
     ax.set_xlabel('Position x (m)')
     ax.set_ylabel('Time t (s)')
-    ax.set_zlabel('Temperature T (K)')
+    ax.set_zlabel('Temperature T (℃)')  # 修改温度单位为℃
     ax.set_title(title)
     plt.show()
 
@@ -140,17 +140,3 @@ if __name__ == "__main__":
     
     print("\n5. 包含牛顿冷却定律的热传导")
     heat_diffusion_with_cooling()
-    主函数 - 演示和测试各任务功能
-    
-    执行顺序:
-    1. 基本热传导模拟
-    2. 解析解计算
-    3. 数值解稳定性分析
-    4. 不同初始条件模拟
-    5. 包含冷却效应的热传导
-    
-    注意:
-        学生需要先实现各任务函数才能正常运行
-    """
-    print("=== 铝棒热传导问题学生实现 ===")
-    print("请先实现各任务函数后再运行主程序")
