@@ -67,9 +67,7 @@ def solve_earth_crust_diffusion():
     return z, T
 
 if __name__ == "__main__":
-    # 测试代码
-    try:
-        # 运行模拟
+     # 运行模拟
         depth, T = solve_earth_crust_diffusion()
         print(f"计算完成，温度场形状: {T.shape}")
     
@@ -145,5 +143,3 @@ if __name__ == "__main__":
         plt.tight_layout()
         plt.savefig('earth_crust_diffusion_results.png', dpi=300)
         plt.show()
-    except NotImplementedError as e:
-        print(e)
